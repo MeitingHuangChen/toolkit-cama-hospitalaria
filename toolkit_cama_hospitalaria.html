@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toolkit — Cama Hospitalaria Eléctrica</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #1a1a1a; font-size: 14px; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 24px auto; background: #fff; border-radius: 14px; border: 1px solid #ddd; overflow: hidden; }
+  .hdr { padding: 18px 20px 12px; border-bottom: 1px solid #e8e8e8; background: #fff; }
+  .brow { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+  .bdg { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; border: 1px solid; }
+  .bt { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
+  .bb { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
+  .bg { background: #F1EFE8; color: #444441; border-color: #B4B2A9; }
+  .htitle { font-size: 18px; font-weight: 600; color: #111; }
+  .hsub { font-size: 11px; color: #666; margin-top: 3px; }
+  /* TABS */
+  .tabs { display: flex; border-bottom: 1px solid #e0e0e0; overflow-x: auto; background: #fafaf8; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tb { display: flex; align-items: center; gap: 5px; padding: 10px 13px; font-size: 12px; color: #666; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; font-family: inherit; font-weight: 500; }
+  .tb:hover { color: #111; background: #f0f0ec; }
+  .tb.on { color: #085041; border-bottom-color: #1D9E75; background: #fff; font-weight: 600; }
+  /* PANELS */
+  .pnl { display: none; padding: 18px 20px; }
+  .pnl.on { display: block; }
+  .slbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #888; margin-bottom: 10px; }
+  /* CARDS */
+  .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .ch { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+  .ci { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .ct { background: #E1F5EE; color: #0F6E56; }
+  .ca { background: #FAEEDA; color: #854F0B; }
+  .cb { background: #E6F1FB; color: #185FA5; }
+  .cr { background: #FCEBEB; color: #A32D2D; }
+  .cp { background: #EEEDFE; color: #534AB7; }
+  .ctitle { font-size: 13px; font-weight: 600; color: #111; }
+  .cdesc { font-size: 12px; color: #555; line-height: 1.55; }
+  /* ALERTS */
+  .alrt { display: flex; gap: 9px; align-items: flex-start; border-radius: 8px; padding: 10px 12px; margin-bottom: 9px; font-size: 12px; line-height: 1.5; border: 1px solid; }
+  .ad { background: #FCEBEB; border-color: #F7C1C1; color: #501313; }
+  .aw { background: #FAEEDA; border-color: #FAC775; color: #633806; }
+  .as { background: #E1F5EE; border-color: #9FE1CB; color: #085041; }
+  .ai { background: #E6F1FB; border-color: #B5D4F4; color: #0C447C; }
+  .alrt i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  /* STEPS */
+  .steps { list-style: none; padding: 0; }
+  .si { display: flex; gap: 9px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+  .si:last-child { border-bottom: none; }
+  .sn { width: 20px; height: 20px; border-radius: 50%; background: #1D9E75; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .snr { background: #D85A30; }
+  .snb { background: #378ADD; }
+  .sna { background: #854F0B; }
+  .st { font-size: 12px; color: #111; line-height: 1.5; }
+  .snt { font-size: 10px; color: #888; font-style: italic; margin-top: 2px; }
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 8px; }
+  .tbl th { background: #E1F5EE; color: #085041; font-weight: 700; padding: 7px 9px; text-align: left; border: 1px solid #9FE1CB; }
+  .tbl td { padding: 7px 9px; border: 1px solid #e0e0e0; color: #111; vertical-align: top; }
+  .tbl tr:nth-child(even) td { background: #fafaf8; }
+  /* CHECKLIST */
+  .ck { display: flex; gap: 9px; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 12px; color: #111; cursor: pointer; user-select: none; }
+  .ck:last-child { border-bottom: none; }
+  .ck:hover { color: #085041; }
+  .ckb { width: 18px; height: 18px; border: 2px solid #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; transition: all .15s; }
+  .ckb.done { background: #1D9E75; border-color: #1D9E75; }
+  .ckb.done::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+  /* GRID 2 */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .ni { background: #fafaf8; border-radius: 8px; padding: 10px 12px; border: 1px solid #e8e8e8; }
+  .nt { font-size: 11px; font-weight: 700; color: #111; margin-bottom: 3px; }
+  .ns { font-size: 10px; color: #555; line-height: 1.4; }
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .chip { font-size: 10px; padding: 3px 8px; border-radius: 12px; background: #f0f0ec; color: #555; border: 1px solid #ddd; }
+  /* PROFILE CHIPS */
+  .pchips { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .pc { padding: 5px 13px; font-size: 12px; border-radius: 20px; cursor: pointer; border: 1px solid #ccc; background: #f5f5f0; color: #555; font-family: inherit; font-weight: 500; }
+  .pc:hover { background: #eee; }
+  .pce { background: #E1F5EE; color: #085041; border-color: #5DCAA5; font-weight: 600; }
+  .pcm { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; font-weight: 600; }
+  .pct { background: #FAEEDA; color: #633806; border-color: #EF9F27; font-weight: 600; }
+  /* SCENARIO CARDS */
+  .scard { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+  .shdr { padding: 10px 16px; background: #E6F1FB; border-bottom: 1px solid #B5D4F4; display: flex; align-items: center; gap: 8px; }
+  .stitle { font-size: 12px; font-weight: 700; color: #0C447C; }
+  .sbody { padding: 14px 16px; }
+  .srow { display: flex; gap: 8px; margin-bottom: 7px; align-items: flex-start; }
+  .slb2 { font-size: 10px; font-weight: 700; color: #888; min-width: 72px; padding-top: 1px; text-transform: uppercase; letter-spacing: .04em; }
+  .sv { font-size: 12px; color: #111; line-height: 1.5; }
+  /* QUIZ */
+  .qcard { background: #fff; border: 1.5px solid #e0e0e0; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .qcard.aok { border-color: #5DCAA5; }
+  .qcard.ano { border-color: #F7C1C1; }
+  .qtop { display: flex; align-items: center; gap: 6px; margin-bottom: 9px; flex-wrap: wrap; }
+  .qnum { font-size: 10px; font-weight: 700; color: #888; }
+  .qbdg { font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; }
+  .qbe { background: #E1F5EE; color: #085041; }
+  .qbm { background: #E6F1FB; color: #0C447C; }
+  .qbt { background: #FAEEDA; color: #633806; }
+  .qdiff { font-size: 10px; padding: 3px 8px; border-radius: 12px; background: #f0f0ec; color: #666; border: 1px solid #ddd; }
+  .qtema { font-size: 10px; color: #888; margin-left: auto; font-style: italic; }
+  .qq { font-size: 13px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; color: #111; }
+  /* QUIZ OPTIONS */
+  .qopts { list-style: none; padding: 0; }
+  .qo { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; color: #111; border: 1.5px solid #e0e0e0; margin-bottom: 5px; background: #fafaf8; transition: border-color .12s, background .12s; }
+  .qo:hover { border-color: #aaa; background: #f0f0ec; }
+  .ql { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; background: #fff; border: 1.5px solid #ccc; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: #444; }
+  .qo.ok { background: #E1F5EE; border-color: #5DCAA5; color: #085041; pointer-events: none; }
+  .qo.ok .ql { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+  .qo.no { background: #FCEBEB; border-color: #F7C1C1; color: #501313; pointer-events: none; }
+  .qo.no .ql { background: #E24B4A; border-color: #E24B4A; color: #fff; }
+  .qo.dis { pointer-events: none; opacity: .6; }
+  /* FEEDBACK */
+  .fb { margin-top: 9px; padding: 9px 11px; border-radius: 8px; font-size: 11px; line-height: 1.55; display: none; border: 1px solid; }
+  .fbok { background: #E1F5EE; color: #085041; border-color: #9FE1CB; }
+  .fbno { background: #FCEBEB; color: #501313; border-color: #F7C1C1; }
+  /* SCORE BAR */
+  .sbar { display: flex; align-items: center; gap: 12px; background: #fafaf8; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; border: 1px solid #e8e8e8; }
+  .snum { font-size: 22px; font-weight: 700; color: #111; }
+  .slb3 { font-size: 11px; color: #666; }
+  .spct { font-size: 13px; font-weight: 700; margin-left: auto; }
+  .rbtn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; font-size: 11px; border-radius: 8px; cursor: pointer; border: 1px solid #ccc; background: #f0f0ec; color: #555; font-family: inherit; }
+  .rbtn:hover { background: #e8e8e3; }
+  /* FLOW DIAGRAM */
+  .fl-box { border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 7px 12px; text-align: center; font-size: 11px; font-weight: 600; color: #111; background: #fafaf8; min-width: 90px; }
+  .fl-q { background: #E6F1FB; border-color: #B5D4F4; color: #0C447C; }
+  .fl-ok { background: #E1F5EE; border-color: #9FE1CB; color: #085041; }
+  .fl-w { background: #FAEEDA; border-color: #FAC775; color: #633806; }
+  .fl-r { background: #FCEBEB; border-color: #F7C1C1; color: #501313; }
+  .fl-arr { text-align: center; font-size: 14px; color: #aaa; padding: 2px 0; }
+  .fl-row { display: flex; gap: 8px; align-items: flex-start; justify-content: center; }
+  .fl-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+  /* MATRIX */
+  .mtx th, .mtx td { padding: 7px 9px; border: 1px solid #e0e0e0; font-size: 11px; text-align: center; }
+  .mtx th { background: #E1F5EE; color: #085041; font-weight: 700; }
+  .mtx td:first-child { text-align: left; font-weight: 600; }
+  .ck-g { color: #0F6E56; font-size: 14px; }
+  /* ACTION BUTTON */
+  .abtn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; font-size: 11px; border-radius: 8px; cursor: pointer; border: 1px solid #ccc; background: #fafaf8; color: #333; margin-top: 8px; font-family: inherit; font-weight: 500; }
+  .abtn:hover { background: #eee; border-color: #bbb; }
+  .src { font-size: 10px; color: #999; font-style: italic; margin-top: 4px; }
+  .div { border: none; border-top: 1px solid #f0f0f0; margin: 12px 0; }
+  @media (max-width: 520px) { .g2 { grid-template-columns: 1fr; } .wrap { margin: 0; border-radius: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="brow">
+    <span class="bdg bt"><i class="ti ti-bed"></i> Evidencia 4 · Toolkit completo</span>
+    <span class="bdg bb"><i class="ti ti-file-certificate"></i> Fuentes verificadas</span>
+    <span class="bdg bg"><i class="ti ti-building-hospital"></i> Hospitalización general</span>
+  </div>
+  <div class="htitle">Cama hospitalaria eléctrica — kit de capacitación</div>
+  <div class="hsub">Hill-Rom 900B · VersaCare · Stryker Epic II · Ortotecsa ORT-5618K · CEOMA · CLIMSS · COFEPRIS · NOM-241 · NOM-220</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tb on" onclick="TAB('guia',this)"><i class="ti ti-layout-list"></i> Guía</button>
+  <button class="tb" onclick="TAB('perfil',this)"><i class="ti ti-users"></i> Perfiles</button>
+  <button class="tb" onclick="TAB('casos',this)"><i class="ti ti-activity"></i> Casos</button>
+  <button class="tb" onclick="TAB('banco',this)"><i class="ti ti-help-circle"></i> Preguntas</button>
+  <button class="tb" onclick="TAB('diag',this)"><i class="ti ti-git-branch"></i> Diagramas</button>
+  <button class="tb" onclick="TAB('tecno',this)"><i class="ti ti-alert-triangle"></i> Fallas</button>
+  <button class="tb" onclick="TAB('etica',this)"><i class="ti ti-scale"></i> Ética</button>
+</div>
+
+<!-- ═══ GUÍA ═══ -->
+<div id="tab-guia" class="pnl on">
+  <p class="slbl">Guía rápida · Infografía point-of-care</p>
+  <div class="alrt aw"><i class="ti ti-alert-triangle"></i><div><strong>Antes de cada uso:</strong> frenos trabados + barandillas en posición + informar al paciente. Siempre en ese orden.</div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci ct"><i class="ti ti-components"></i></div><div class="ctitle">Componentes principales</div></div>
+    <div class="g2">
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:4px">Estructura y movimiento</div><div class="chips"><span class="chip">Cabecera articulada</span><span class="chip">Rodillera</span><span class="chip">Altura regulable</span><span class="chip">Trendelenburg</span></div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:4px">Controles</div><div class="chips"><span class="chip">Panel del personal</span><span class="chip">Control del paciente</span><span class="chip">Tirador de RCP</span><span class="chip">Palanca manual</span></div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:4px">Seguridad</div><div class="chips"><span class="chip">4 frenos de ruedas</span><span class="chip">Barandillas laterales</span><span class="chip">Alarma de salida</span></div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:4px">Superficie</div><div class="chips"><span class="chip">Colchón estándar</span><span class="chip">Antiescaras</span><span class="chip">Compresor de presión</span></div></div>
+    </div>
+    <div class="src">Hill-Rom VersaCare · Stryker Epic II · Ortotecsa ORT-5618K</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cb"><i class="ti ti-arrows-move"></i></div><div class="ctitle">Posiciones clínicas y funciones eléctricas</div></div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Posición</th><th>Grado</th><th>Indicación clínica</th><th>Alerta / contraindicación</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fowler</strong></td><td>45°–90°</td><td>Dificultad respiratoria, alimentación oral, EPOC</td><td>Evitar en hipotensión severa</td></tr>
+        <tr><td><strong>Semi-Fowler</strong></td><td>30°–45°</td><td>Postoperatorio, sonda nasogástrica, reposo</td><td>Verificar indicación médica</td></tr>
+        <tr><td><strong>Plana</strong></td><td>0°</td><td>Hipotensión, post-punción lumbar</td><td>No usar con riesgo de broncoaspiración</td></tr>
+        <tr><td><strong>Trendelenburg</strong></td><td>Variable</td><td>Prevención NAV, reflujo gastroesofágico</td><td>Contraindicado en patología cervical</td></tr>
+        <tr><td><strong>RCP</strong></td><td>Plana máx.</td><td>Paro cardiorrespiratorio — tirador Hill-Rom</td><td>Solo en emergencia</td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">La posición Fowler y sus variantes · Manual Hill-Rom 900B · Ortotecsa ORT-5618K</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cr"><i class="ti ti-shield-check"></i></div><div class="ctitle">Frenos · Barandillas · RCP · Falla eléctrica</div></div>
+    <div class="g2">
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:3px">Frenos</div><div class="st" style="font-size:11px">Trabar los 4 antes de cualquier atención. Verificar al inicio y fin de turno. Si alguno falla → retirar del servicio.</div><div class="src">Stryker Epic II</div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:3px">Barandillas</div><div class="st" style="font-size:11px">Usar según evaluación individual. Evaluar el motivo si el paciente intenta levantarse antes de subirla.</div><div class="src">CEOMA</div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:3px">Tirador de RCP</div><div class="st" style="font-size:11px">En paro: activar tirador. La cama baja automáticamente a posición plana óptima para compresiones.</div><div class="src">Manual Hill-Rom 900B</div></div>
+      <div><div class="st" style="font-size:11px;font-weight:700;margin-bottom:3px">Falla eléctrica</div><div class="st" style="font-size:11px">No forzar controles. Usar palanca manual. Notificar a biomédica. No volver a usar hasta revisión.</div><div class="src">Manual Hill-Rom 900B · VersaCare</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci ct"><i class="ti ti-checkbox"></i></div><div class="ctitle">Checklist antes de usar — hacer clic para marcar</div></div>
+    <div id="cklist">
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Cama conectada a toma eléctrica e indicador encendido</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Los 4 frenos de ruedas trabados correctamente</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Cable eléctrico sin daños visibles en el aislamiento</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Barandillas en posición correcta según riesgo del paciente</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Control remoto responde al primer toque</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Paciente informado sobre el funcionamiento de su control</span></div>
+      <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Posición de la cama según indicación médica documentada</span></div>
+    </div>
+    <div class="src" style="margin-top:6px">Hill-Rom VersaCare · Stryker Epic II · NOM-241-SSA1-2021</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cr"><i class="ti ti-alert-octagon"></i></div><div class="ctitle">Situaciones de riesgo y respuesta inmediata</div></div>
+    <div class="alrt ad"><i class="ti ti-plug-x"></i><div><strong>Falla eléctrica:</strong> no forzar botones → palanca manual → notificar biomédica → no usar hasta revisión. <span class="src">Manual Hill-Rom 900B</span></div></div>
+    <div class="alrt ad"><i class="ti ti-arrow-down-circle"></i><div><strong>Barandilla que cede:</strong> detener movimiento → evaluar sin mover solo → pedir apoyo → reportar a biomédica y como evento adverso. <span class="src">CEOMA · COFEPRIS</span></div></div>
+    <div class="alrt aw"><i class="ti ti-bell"></i><div><strong>Alarma de salida (Chaperone):</strong> acudir de inmediato → evaluar motivo → no silenciar sin evaluar. <span class="src">Stryker Epic II · VersaCare</span></div></div>
+    <div class="alrt aw"><i class="ti ti-spray"></i><div><strong>Limpieza:</strong> hipoclorito 0.1% en hospitalización general, zonas altas a bajas, movimientos en una sola dirección. Nunca líquidos directo sobre controles. <span class="src">CLIMSS-ISSSTE</span></div></div>
+  </div>
+</div>
+
+<!-- ═══ PERFILES ═══ -->
+<div id="tab-perfil" class="pnl">
+  <p class="slbl">Capacitación personalizada por perfil</p>
+  <div class="pchips">
+    <button class="pc pce" onclick="PERF('enf',this)"><i class="ti ti-stethoscope"></i> Enfermería</button>
+    <button class="pc" onclick="PERF('med',this)"><i class="ti ti-report-medical"></i> Médicos</button>
+    <button class="pc" onclick="PERF('tec',this)"><i class="ti ti-settings"></i> Técnicos biomed</button>
+  </div>
+  <div id="pe">
+    <div class="card">
+      <div class="ch"><div class="ci ct"><i class="ti ti-nurse"></i></div><div class="ctitle">Enfermería — movilización, caídas, posicionamiento y barandillas</div></div>
+      <div class="alrt as"><i class="ti ti-bulb"></i><div><strong>Regla de oro:</strong> frenos + barandillas + posición + avisar al paciente. Siempre antes de tocar la cama.</div></div>
+      <ul class="steps">
+        <li class="si"><span class="sn">1</span><div><div class="st"><strong>Movilización segura:</strong> ajusta la altura de la cama a tu cadera antes de mover al paciente. Menos esfuerzo, menos riesgo.</div></div></li>
+        <li class="si"><span class="sn">2</span><div><div class="st"><strong>Prevención de caídas:</strong> riesgo alto → cama baja + 4 frenos + barandillas arriba + control al alcance. Verificar al inicio de cada turno.</div><div class="snt">CEOMA · Manual VersaCare</div></div></li>
+        <li class="si"><span class="sn">3</span><div><div class="st"><strong>Posicionamiento:</strong> la posición es indicación médica. Si no está documentada, preguntar antes de cambiarla.</div><div class="snt">La posición Fowler y sus variantes</div></div></li>
+        <li class="si"><span class="sn">4</span><div><div class="st"><strong>Barandillas:</strong> evaluar por qué el paciente intenta levantarse antes de subirla. Puede ser dolor, necesidad fisiológica o confusión.</div><div class="snt">CEOMA</div></div></li>
+        <li class="si"><span class="sn">5</span><div><div class="st"><strong>Alarma de salida:</strong> acudir de inmediato. No silenciar sin evaluar. Documentar en bitácora.</div><div class="snt">Stryker Epic II · Hill-Rom VersaCare</div></div></li>
+        <li class="si"><span class="sn">6</span><div><div class="st"><strong>Falla eléctrica:</strong> palanca manual → notificar biomédica → no volver a usar hasta revisión. No forzar controles.</div><div class="snt">Manual Hill-Rom 900B</div></div></li>
+      </ul>
+    </div>
+  </div>
+  <div id="pm" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ci cb"><i class="ti ti-report-medical"></i></div><div class="ctitle">Médicos — prescripción, procedimientos y seguridad</div></div>
+      <div class="alrt ai"><i class="ti ti-info-circle"></i><div>La posición en cama es una <strong>indicación clínica formal</strong>. Debe quedar en nota médica con grado, frecuencia y restricciones. Su omisión puede generar eventos adversos documentables. (NOM-241)</div></div>
+      <ul class="steps">
+        <li class="si"><span class="sn snb">1</span><div><div class="st"><strong>Prescribir posición:</strong> nombre + grado + frecuencia de cambio + contraindicaciones. Sin esto, enfermería decide sin respaldo.</div></div></li>
+        <li class="si"><span class="sn snb">2</span><div><div class="st"><strong>Uso durante procedimientos:</strong> usar el control del personal (Point-of-Care™), no el del paciente. Tienen funciones diferentes.</div><div class="snt">Manual Hill-Rom VersaCare</div></div></li>
+        <li class="si"><span class="sn snb">3</span><div><div class="st"><strong>RCP:</strong> activar el tirador de RCP (Hill-Rom) antes de iniciar compresiones — baja a posición óptima automáticamente.</div><div class="snt">Manual Hill-Rom 900B</div></div></li>
+        <li class="si"><span class="sn snb">4</span><div><div class="st"><strong>Alimentación enteral:</strong> Semi-Fowler 30–45° durante y mínimo 30 min después. No dejar esta decisión al turno.</div><div class="snt">La posición Fowler y sus variantes</div></div></li>
+        <li class="si"><span class="sn snb">5</span><div><div class="st"><strong>Cama que no mantiene posición:</strong> reportar a enfermería + solicitar revisión biomédica + documentar en expediente.</div><div class="snt">NOM-241-SSA1-2021</div></div></li>
+      </ul>
+    </div>
+  </div>
+  <div id="pt" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ci ca"><i class="ti ti-settings-2"></i></div><div class="ctitle">Técnicos biomed — inspección, mantenimiento y tecnovigilancia</div></div>
+      <div class="alrt aw"><i class="ti ti-alert-triangle"></i><div>Un fallo no corregido puede provocar caída de paciente → evento adverso → reporte COFEPRIS obligatorio.</div></div>
+      <ul class="steps">
+        <li class="si"><span class="sn sna">1</span><div><div class="st"><strong>Inspección visual:</strong> estructura, soldaduras, pintura sin descascarado en puntos de estrés.</div></div></li>
+        <li class="si"><span class="sn sna">2</span><div><div class="st"><strong>Prueba de frenos:</strong> 50 N de fuerza lateral con frenos activos. Si la cama se desplaza → retiro inmediato del servicio.</div><div class="snt">Stryker Epic II · Pronasa Salud</div></div></li>
+        <li class="si"><span class="sn sna">3</span><div><div class="st"><strong>Actuadores:</strong> rango completo sin ruidos, traqueteos ni lentitud mayor al 30% del parámetro normal.</div><div class="snt">Ortotecsa ORT-5618K</div></div></li>
+        <li class="si"><span class="sn sna">4</span><div><div class="st"><strong>Revisión eléctrica:</strong> continuidad del cable, aislamiento sin daños, conexiones a tierra y fugas de corriente.</div><div class="snt">Stryker Epic II</div></div></li>
+        <li class="si"><span class="sn sna">5</span><div><div class="st"><strong>Lubricación:</strong> tornillos y articulaciones cada 3 meses. Solo repuestos originales del fabricante.</div><div class="snt">Pronasa Salud</div></div></li>
+        <li class="si"><span class="sn sna">6</span><div><div class="st"><strong>Registro y reporte:</strong> registrar en SIEM. Reportar a COFEPRIS fallas con implicación clínica real.</div><div class="snt">NOM-220-SSA1-2016</div></div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci cr"><i class="ti ti-clipboard-check"></i></div><div class="ctitle">Checklist mantenimiento preventivo semestral</div></div>
+      <div id="ck2">
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Inspección visual completa de estructura</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Prueba de frenos con 50 N de fuerza lateral</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Rango completo de actuadores sin ruidos</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Verificación eléctrica: continuidad + tierra + fugas</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Barandillas: bloqueo firme sin juego excesivo</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Lubricación de articulaciones y tornillos</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Registro en SIEM con hallazgos documentados</span></div>
+        <div class="ck" onclick="CK(this)"><div class="ckb"></div><span>Evaluación de reporte a COFEPRIS si aplica</span></div>
+      </div>
+      <div class="src" style="margin-top:6px">Stryker Epic II · Pronasa Salud · NOM-241 · COFEPRIS</div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ci cb"><i class="ti ti-table"></i></div><div class="ctitle">Matriz de responsabilidades por perfil</div></div>
+      <div style="overflow-x:auto"><table class="tbl mtx">
+        <thead><tr><th style="text-align:left">Actividad</th><th>Enfermería</th><th>Médico</th><th>Biomed</th></tr></thead>
+        <tbody>
+          <tr><td>Posicionar al paciente</td><td><span class="ck-g">✔</span></td><td><span class="ck-g">✔</span></td><td></td></tr>
+          <tr><td>Prescribir posición clínica</td><td></td><td><span class="ck-g">✔</span></td><td></td></tr>
+          <tr><td>Verificar frenos y barandillas</td><td><span class="ck-g">✔</span></td><td></td><td><span class="ck-g">✔</span></td></tr>
+          <tr><td>Inspección técnica del equipo</td><td></td><td></td><td><span class="ck-g">✔</span></td></tr>
+          <tr><td>Limpieza y desinfección</td><td><span class="ck-g">✔</span></td><td></td><td></td></tr>
+          <tr><td>Reporte de incidentes</td><td><span class="ck-g">✔</span></td><td><span class="ck-g">✔</span></td><td><span class="ck-g">✔</span></td></tr>
+          <tr><td>Retiro del servicio</td><td></td><td></td><td><span class="ck-g">✔</span></td></tr>
+          <tr><td>Notificación COFEPRIS</td><td><span class="ck-g">✔</span></td><td><span class="ck-g">✔</span></td><td><span class="ck-g">✔</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CASOS ═══ -->
+<div id="tab-casos" class="pnl">
+  <p class="slbl">Casos clínicos de simulación · Basados en fuentes verificadas</p>
+  <div class="scard">
+    <div class="shdr"><i class="ti ti-lungs" style="font-size:15px;color:#185FA5"></i><div class="stitle">Caso 1 · Paciente con dificultad respiratoria — ¿qué posición?</div></div>
+    <div class="sbody">
+      <div class="srow"><span class="slb2">Contexto</span><span class="sv">Paciente 65 años, descompensación cardiaca. SpO₂ 88%, FR 26 rpm, refiere ahogo en posición plana. Indicación de posición no documentada en nota médica.</span></div>
+      <div class="srow"><span class="slb2">Variables</span><span class="sv">PA 100/70, FC 102. Cooperador, sin sonda nasogástrica.</span></div>
+      <div class="srow"><span class="slb2">Pregunta</span><span class="sv">¿Qué posición, a cuántos grados, con qué justificación y cómo se documenta?</span></div>
+      <div class="srow"><span class="slb2">Fuente</span><span class="sv" style="color:#999;font-style:italic">La posición Fowler y sus variantes · Ortotecsa ORT-5618K</span></div>
+    </div>
+  </div>
+  <div class="scard">
+    <div class="shdr"><i class="ti ti-walk" style="font-size:15px;color:#185FA5"></i><div class="stitle">Caso 2 · Paciente geriátrico intenta salir — ¿cómo reducir el riesgo?</div></div>
+    <div class="sbody">
+      <div class="srow"><span class="slb2">Contexto</span><span class="sv">Paciente 78 años, fractura de cadera, desorientado. Segunda noche postoperatoria. Alarma Chaperone activa a las 02:40 h.</span></div>
+      <div class="srow"><span class="slb2">Variables</span><span class="sv">Barandilla izquierda abajo. Cama en posición alta. Enfermera sola. Catéter venoso periférico. Sin orden de sujeción.</span></div>
+      <div class="srow"><span class="slb2">Pregunta</span><span class="sv">¿Cuál es la secuencia correcta? ¿Cuándo se usa la barandilla? ¿Qué se evalúa antes de contener?</span></div>
+      <div class="srow"><span class="slb2">Fuente</span><span class="sv" style="color:#999;font-style:italic">CEOMA · Stryker Epic II — Chaperone® · Hill-Rom VersaCare</span></div>
+    </div>
+  </div>
+  <div class="scard">
+    <div class="shdr"><i class="ti ti-plug-x" style="font-size:15px;color:#185FA5"></i><div class="stitle">Caso 3 · Falla eléctrica durante emergencia — ¿qué procedimiento seguir?</div></div>
+    <div class="sbody">
+      <div class="srow"><span class="slb2">Contexto</span><span class="sv">Paro cardiorrespiratorio. Cama Hill-Rom VersaCare. Control eléctrico no responde. Paciente en Semi-Fowler 45°.</span></div>
+      <div class="srow"><span class="slb2">Variables</span><span class="sv">Residente solo con una enfermera. Desfibrilador llega en 90 segundos. Sin soporte técnico inmediato.</span></div>
+      <div class="srow"><span class="slb2">Pregunta</span><span class="sv">¿Cuál es la primera acción con la cama? ¿Cómo se usa la palanca de emergencia? ¿Compresiones antes o después?</span></div>
+      <div class="srow"><span class="slb2">Fuente</span><span class="sv" style="color:#999;font-style:italic">Manual Hill-Rom 900B — tirador de RCP · Manual Hill-Rom VersaCare</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BANCO DE PREGUNTAS ═══ -->
+<div id="tab-banco" class="pnl">
+  <p class="slbl">30 preguntas · 10 por perfil · Basadas en el contenido del toolkit</p>
+  <div class="pchips">
+    <button class="pc pce" onclick="FQ('enf',this)"><i class="ti ti-stethoscope"></i> Enfermería (10)</button>
+    <button class="pc" onclick="FQ('med',this)"><i class="ti ti-report-medical"></i> Médicos (10)</button>
+    <button class="pc" onclick="FQ('tec',this)"><i class="ti ti-settings"></i> Técnicos (10)</button>
+  </div>
+
+  <!-- ENFERMERÍA -->
+  <div id="qenf">
+    <div class="sbar"><div><div class="slb3">Correctas</div><div class="snum" id="se">0 / 10</div></div><div class="spct" id="pe2">0%</div><button class="rbtn" onclick="RQ('enf')"><i class="ti ti-refresh"></i> Reiniciar</button></div>
+    <div class="qcard" data-p="enf" data-q="e1"><div class="qtop"><span class="qnum">1</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Básico</span><span class="qtema">Checklist</span></div><div class="qq">Según el checklist del toolkit, ¿cuál es el primer punto a verificar antes de usar la cama?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e1','enf')"><span class="ql">A</span> Que el control del paciente funcione</li><li class="qo" onclick="R(this,true,'e1','enf')"><span class="ql">B</span> Que la cama esté conectada a la toma eléctrica y el indicador encendido</li><li class="qo" onclick="R(this,false,'e1','enf')"><span class="ql">C</span> Que las barandillas estén arriba</li><li class="qo" onclick="R(this,false,'e1','enf')"><span class="ql">D</span> Que el paciente esté informado</li></ul><div class="fb fbok" id="fbe1ok"><strong>Correcto.</strong> El checklist del toolkit establece como primer punto: conexión eléctrica e indicador encendido. Sin corriente ningún otro punto aplica.</div><div class="fb fbno" id="fbe1no"><strong>Incorrecto.</strong> El primer punto del checklist es verificar la conexión eléctrica y el indicador de energía encendido.</div></div>
+    <div class="qcard" data-p="enf" data-q="e2"><div class="qtop"><span class="qnum">2</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Básico</span><span class="qtema">Frenos</span></div><div class="qq">El toolkit indica que los frenos deben verificarse en el turno. ¿Cuándo exactamente?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e2','enf')"><span class="ql">A</span> Solo al inicio del turno</li><li class="qo" onclick="R(this,false,'e2','enf')"><span class="ql">B</span> Solo cuando se va a mover al paciente</li><li class="qo" onclick="R(this,true,'e2','enf')"><span class="ql">C</span> Al inicio y al final del turno, documentando en bitácora del equipo</li><li class="qo" onclick="R(this,false,'e2','enf')"><span class="ql">D</span> Una vez por semana</li></ul><div class="fb fbok" id="fbe2ok"><strong>Correcto.</strong> El toolkit especifica inicio Y final del turno con registro en bitácora. (Stryker Epic II · Pronasa Salud)</div><div class="fb fbno" id="fbe2no"><strong>Incorrecto.</strong> El toolkit indica inicio Y final del turno, ambos con registro en bitácora. Solo al inicio no es suficiente.</div></div>
+    <div class="qcard" data-p="enf" data-q="e3"><div class="qtop"><span class="qnum">3</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Básico</span><span class="qtema">Barandillas</span></div><div class="qq">Según el toolkit (CEOMA), antes de subir la barandilla a un adulto mayor que intenta levantarse, lo primero es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e3','enf')"><span class="ql">A</span> Subir la barandilla de inmediato</li><li class="qo" onclick="R(this,false,'e3','enf')"><span class="ql">B</span> Llamar al familiar</li><li class="qo" onclick="R(this,true,'e3','enf')"><span class="ql">C</span> Evaluar el motivo: puede ser dolor, necesidad fisiológica o confusión — cada uno cambia la intervención</li><li class="qo" onclick="R(this,false,'e3','enf')"><span class="ql">D</span> Aumentar la sedación</li></ul><div class="fb fbok" id="fbe3ok"><strong>Correcto.</strong> CEOMA, citado en el toolkit: evaluar el motivo primero. La barandilla sola no resuelve el problema.</div><div class="fb fbno" id="fbe3no"><strong>Incorrecto.</strong> CEOMA indica evaluar el motivo antes de contener. Subir la barandilla sin evaluar puede no resolver el problema de fondo.</div></div>
+    <div class="qcard" data-p="enf" data-q="e4"><div class="qtop"><span class="qnum">4</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Básico</span><span class="qtema">Posiciones</span></div><div class="qq">Según la tabla de posiciones del toolkit, ¿cuál es la indicada para dificultad respiratoria cuando el paciente tolera la elevación?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e4','enf')"><span class="ql">A</span> Posición plana a 0°</li><li class="qo" onclick="R(this,false,'e4','enf')"><span class="ql">B</span> Trendelenburg inverso</li><li class="qo" onclick="R(this,true,'e4','enf')"><span class="ql">C</span> Fowler entre 45° y 90°</li><li class="qo" onclick="R(this,false,'e4','enf')"><span class="ql">D</span> Semi-Fowler a 30°</li></ul><div class="fb fbok" id="fbe4ok"><strong>Correcto.</strong> Tabla del toolkit: Fowler (45°–90°) para dificultad respiratoria. (La posición Fowler y sus variantes)</div><div class="fb fbno" id="fbe4no"><strong>Incorrecto.</strong> La tabla del toolkit indica Fowler 45°–90° para dificultad respiratoria. Semi-Fowler es para postoperatorio y reposo.</div></div>
+    <div class="qcard" data-p="enf" data-q="e5"><div class="qtop"><span class="qnum">5</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Básico</span><span class="qtema">Limpieza</span></div><div class="qq">El toolkit (CLIMSS-ISSSTE) indica que para limpiar la cama en hospitalización general se usa hipoclorito al:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e5','enf')"><span class="ql">A</span> 0.5% en cualquier área</li><li class="qo" onclick="R(this,true,'e5','enf')"><span class="ql">B</span> 0.1%, técnica de zonas altas a bajas, movimientos en una sola dirección</li><li class="qo" onclick="R(this,false,'e5','enf')"><span class="ql">C</span> 5% directo sobre superficies</li><li class="qo" onclick="R(this,false,'e5','enf')"><span class="ql">D</span> Cualquier concentración con agua</li></ul><div class="fb fbok" id="fbe5ok"><strong>Correcto.</strong> CLIMSS-ISSSTE: 0.1% en área no crítica, 0.5% en área crítica. Técnica alta a baja, una sola dirección.</div><div class="fb fbno" id="fbe5no"><strong>Incorrecto.</strong> CLIMSS-ISSSTE establece 0.1% para hospitalización general. El 0.5% es para áreas críticas.</div></div>
+    <div class="qcard" data-p="enf" data-q="e6"><div class="qtop"><span class="qnum">6</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Intermedio</span><span class="qtema">Falla eléctrica</span></div><div class="qq">Si la cama no responde al control, se usa la palanca manual. ¿Qué se hace DESPUÉS de ajustar la posición?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e6','enf')"><span class="ql">A</span> Reintentar el control eléctrico</li><li class="qo" onclick="R(this,false,'e6','enf')"><span class="ql">B</span> Continuar usando la cama normalmente</li><li class="qo" onclick="R(this,true,'e6','enf')"><span class="ql">C</span> Notificar a ingeniería biomédica y no volver a usar hasta que sea revisada</li><li class="qo" onclick="R(this,false,'e6','enf')"><span class="ql">D</span> Documentar y esperar al siguiente turno</li></ul><div class="fb fbok" id="fbe6ok"><strong>Correcto.</strong> El toolkit: palanca manual → notificar biomédica → no usar hasta revisión. (Manual Hill-Rom 900B)</div><div class="fb fbno" id="fbe6no"><strong>Incorrecto.</strong> Después de la palanca manual: notificar a biomédica y NO usar hasta revisión autorizada.</div></div>
+    <div class="qcard" data-p="enf" data-q="e7"><div class="qtop"><span class="qnum">7</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Intermedio</span><span class="qtema">RCP</span></div><div class="qq">En paro cardiorrespiratorio, el toolkit indica activar el tirador de RCP (Hill-Rom). ¿Para qué sirve exactamente?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e7','enf')"><span class="ql">A</span> Para apagar la cama y evitar interferencias</li><li class="qo" onclick="R(this,false,'e7','enf')"><span class="ql">B</span> Para llamar al equipo de reanimación</li><li class="qo" onclick="R(this,true,'e7','enf')"><span class="ql">C</span> Para bajar la cama automáticamente a posición plana óptima para compresiones torácicas</li><li class="qo" onclick="R(this,false,'e7','enf')"><span class="ql">D</span> Para desbloquear todas las barandillas a la vez</li></ul><div class="fb fbok" id="fbe7ok"><strong>Correcto.</strong> Manual Hill-Rom 900B: el tirador baja la cama a posición plana y altura óptima para compresiones efectivas.</div><div class="fb fbno" id="fbe7no"><strong>Incorrecto.</strong> Según el toolkit (Manual Hill-Rom 900B), el tirador lleva la cama a posición plana óptima para compresiones.</div></div>
+    <div class="qcard" data-p="enf" data-q="e8"><div class="qtop"><span class="qnum">8</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Intermedio</span><span class="qtema">Posición plana</span></div><div class="qq">La tabla del toolkit indica que la posición plana (0°) está contraindicada en:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e8','enf')"><span class="ql">A</span> Pacientes con hipotensión</li><li class="qo" onclick="R(this,false,'e8','enf')"><span class="ql">B</span> Todos los pacientes de hospitalización</li><li class="qo" onclick="R(this,true,'e8','enf')"><span class="ql">C</span> Pacientes con riesgo de broncoaspiración</li><li class="qo" onclick="R(this,false,'e8','enf')"><span class="ql">D</span> Postoperatorios de cualquier cirugía</li></ul><div class="fb fbok" id="fbe8ok"><strong>Correcto.</strong> La tabla del toolkit: posición plana contraindicada en riesgo de broncoaspiración. En hipotensión sí está indicada.</div><div class="fb fbno" id="fbe8no"><strong>Incorrecto.</strong> La contraindicación es el riesgo de broncoaspiración. La hipotensión es una indicación, no contraindicación.</div></div>
+    <div class="qcard" data-p="enf" data-q="e9"><div class="qtop"><span class="qnum">9</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Avanzado</span><span class="qtema">Barandilla que cede</span></div><div class="qq">Según el protocolo del toolkit, si una barandilla cede con el paciente parcialmente atrapado, la secuencia correcta es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e9','enf')"><span class="ql">A</span> Mover al paciente de inmediato para liberarlo</li><li class="qo" onclick="R(this,false,'e9','enf')"><span class="ql">B</span> Subir la barandilla y esperar al médico</li><li class="qo" onclick="R(this,true,'e9','enf')"><span class="ql">C</span> Detener todo movimiento → evaluar sin mover solo → pedir apoyo → bajar barandilla → reportar a biomédica y como evento adverso</li><li class="qo" onclick="R(this,false,'e9','enf')"><span class="ql">D</span> Forzar la barandilla para liberarla rápido</li></ul><div class="fb fbok" id="fbe9ok"><strong>Correcto.</strong> El toolkit establece esa secuencia exacta. Nunca mover solo ni forzar el equipo. (CEOMA · COFEPRIS)</div><div class="fb fbno" id="fbe9no"><strong>Incorrecto.</strong> Secuencia: detener → evaluar sin mover solo → pedir apoyo → bajar barandilla → reportar. (CEOMA)</div></div>
+    <div class="qcard" data-p="enf" data-q="e10"><div class="qtop"><span class="qnum">10</span><span class="qbdg qbe">Enfermería</span><span class="qdiff">Avanzado</span><span class="qtema">Tecnovigilancia</span></div><div class="qq">Según la matriz del toolkit, ante un casi-incidente con riesgo real relacionado con la cama, enfermería:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'e10','enf')"><span class="ql">A</span> Solo documenta en bitácora</li><li class="qo" onclick="R(this,false,'e10','enf')"><span class="ql">B</span> Espera a que biomédica decida si reporta</li><li class="qo" onclick="R(this,true,'e10','enf')"><span class="ql">C</span> También tiene obligación de participar en el reporte a COFEPRIS — la matriz marca ✔ para enfermería</li><li class="qo" onclick="R(this,false,'e10','enf')"><span class="ql">D</span> Solo reporta si hubo lesión grave documentada</li></ul><div class="fb fbok" id="fbe10ok"><strong>Correcto.</strong> La matriz de responsabilidades marca ✔ a enfermería en "Notificación COFEPRIS". Es obligación compartida. (NOM-220-SSA1-2016)</div><div class="fb fbno" id="fbe10no"><strong>Incorrecto.</strong> La matriz marca ✔ en COFEPRIS para los tres perfiles, incluyendo enfermería. (NOM-220-SSA1-2016)</div></div>
+  </div>
+
+  <!-- MÉDICOS -->
+  <div id="qmed" style="display:none">
+    <div class="sbar"><div><div class="slb3">Correctas</div><div class="snum" id="sm">0 / 10</div></div><div class="spct" id="pm2">0%</div><button class="rbtn" onclick="RQ('med')"><i class="ti ti-refresh"></i> Reiniciar</button></div>
+    <div class="qcard" data-p="med" data-q="m1"><div class="qtop"><span class="qnum">1</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Básico</span><span class="qtema">Prescripción</span></div><div class="qq">Según el toolkit, la nota médica de posición debe incluir obligatoriamente:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m1','med')"><span class="ql">A</span> Solo el nombre de la posición</li><li class="qo" onclick="R(this,true,'m1','med')"><span class="ql">B</span> Posición + grado + frecuencia de cambio + contraindicaciones específicas</li><li class="qo" onclick="R(this,false,'m1','med')"><span class="ql">C</span> Indicación verbal al turno es suficiente</li><li class="qo" onclick="R(this,false,'m1','med')"><span class="ql">D</span> No requiere documentación formal</li></ul><div class="fb fbok" id="fbm1ok"><strong>Correcto.</strong> El toolkit: posición + grado + frecuencia + contraindicaciones. Sin esto enfermería decide sin respaldo. (NOM-241)</div><div class="fb fbno" id="fbm1no"><strong>Incorrecto.</strong> El toolkit requiere los cuatro elementos. La indicación verbal no es documentación válida. (NOM-241)</div></div>
+    <div class="qcard" data-p="med" data-q="m2"><div class="qtop"><span class="qnum">2</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Básico</span><span class="qtema">Posiciones</span></div><div class="qq">Según la tabla del toolkit, la indicación principal del Semi-Fowler (30°–45°) es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m2','med')"><span class="ql">A</span> Paro cardiorrespiratorio</li><li class="qo" onclick="R(this,false,'m2','med')"><span class="ql">B</span> Hipotensión severa</li><li class="qo" onclick="R(this,true,'m2','med')"><span class="ql">C</span> Postoperatorio, sonda nasogástrica y reposo relativo</li><li class="qo" onclick="R(this,false,'m2','med')"><span class="ql">D</span> Dificultad respiratoria aguda severa</li></ul><div class="fb fbok" id="fbm2ok"><strong>Correcto.</strong> Tabla del toolkit: Semi-Fowler para postoperatorio y sonda nasogástrica. El Fowler es para dificultad respiratoria aguda.</div><div class="fb fbno" id="fbm2no"><strong>Incorrecto.</strong> Semi-Fowler es para postoperatorio y sonda nasogástrica. Dificultad respiratoria requiere Fowler 45°–90°.</div></div>
+    <div class="qcard" data-p="med" data-q="m3"><div class="qtop"><span class="qnum">3</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Básico</span><span class="qtema">RCP</span></div><div class="qq">En paro cardiorrespiratorio, el toolkit indica que la primera acción con la cama Hill-Rom es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m3','med')"><span class="ql">A</span> Bajar la cabecera con el control eléctrico</li><li class="qo" onclick="R(this,true,'m3','med')"><span class="ql">B</span> Activar el tirador de RCP — baja automáticamente a posición plana óptima</li><li class="qo" onclick="R(this,false,'m3','med')"><span class="ql">C</span> Trasladar al paciente al piso</li><li class="qo" onclick="R(this,false,'m3','med')"><span class="ql">D</span> Iniciar compresiones en la posición actual</li></ul><div class="fb fbok" id="fbm3ok"><strong>Correcto.</strong> Manual Hill-Rom 900B: el tirador de RCP es más rápido y funciona incluso sin corriente eléctrica.</div><div class="fb fbno" id="fbm3no"><strong>Incorrecto.</strong> El toolkit indica activar el tirador de RCP primero — lleva la cama a posición plana óptima automáticamente.</div></div>
+    <div class="qcard" data-p="med" data-q="m4"><div class="qtop"><span class="qnum">4</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Intermedio</span><span class="qtema">Responsabilidad</span></div><div class="qq">Según el toolkit, si un paciente desarrolla broncoaspiración por posición plana sin indicación documentada, la responsabilidad clínica recae en:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m4','med')"><span class="ql">A</span> Exclusivamente en enfermería</li><li class="qo" onclick="R(this,true,'m4','med')"><span class="ql">B</span> En el médico prescriptor por no documentar la indicación de posición</li><li class="qo" onclick="R(this,false,'m4','med')"><span class="ql">C</span> En nadie, es un evento adverso inevitable</li><li class="qo" onclick="R(this,false,'m4','med')"><span class="ql">D</span> En el jefe de turno</li></ul><div class="fb fbok" id="fbm4ok"><strong>Correcto.</strong> El toolkit: la omisión de indicación de posición genera responsabilidad clínica en el médico prescriptor. (NOM-241-SSA1-2021)</div><div class="fb fbno" id="fbm4no"><strong>Incorrecto.</strong> La omisión de indicación escrita genera responsabilidad en el médico prescriptor. La omisión también es una acción clínica. (NOM-241)</div></div>
+    <div class="qcard" data-p="med" data-q="m5"><div class="qtop"><span class="qnum">5</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Intermedio</span><span class="qtema">Alimentación enteral</span></div><div class="qq">El toolkit indica que con sonda nasogástrica para alimentación enteral la posición correcta es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m5','med')"><span class="ql">A</span> Posición plana para facilitar el tránsito gástrico</li><li class="qo" onclick="R(this,true,'m5','med')"><span class="ql">B</span> Semi-Fowler 30–45° durante la alimentación y mínimo 30 min después</li><li class="qo" onclick="R(this,false,'m5','med')"><span class="ql">C</span> Fowler a 90° de forma permanente</li><li class="qo" onclick="R(this,false,'m5','med')"><span class="ql">D</span> Trendelenburg para favorecer el paso gástrico</li></ul><div class="fb fbok" id="fbm5ok"><strong>Correcto.</strong> El toolkit especifica Semi-Fowler 30–45° durante y 30 min después para reducir broncoaspiración.</div><div class="fb fbno" id="fbm5no"><strong>Incorrecto.</strong> Semi-Fowler 30–45° durante y 30 min después. La posición plana con sonda nasogástrica aumenta el riesgo de broncoaspiración.</div></div>
+    <div class="qcard" data-p="med" data-q="m6"><div class="qtop"><span class="qnum">6</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Intermedio</span><span class="qtema">Controles</span></div><div class="qq">Para ajustar la posición durante un procedimiento clínico, el toolkit indica usar:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m6','med')"><span class="ql">A</span> El control del paciente, está más a la mano</li><li class="qo" onclick="R(this,true,'m6','med')"><span class="ql">B</span> El control del personal (Point-of-Care™), con acceso completo a todas las funciones</li><li class="qo" onclick="R(this,false,'m6','med')"><span class="ql">C</span> Cualquier control es equivalente</li><li class="qo" onclick="R(this,false,'m6','med')"><span class="ql">D</span> No se ajusta la posición durante procedimientos</li></ul><div class="fb fbok" id="fbm6ok"><strong>Correcto.</strong> El toolkit diferencia los controles: el del personal tiene todas las funciones; el del paciente, funciones limitadas. (Manual Hill-Rom VersaCare)</div><div class="fb fbno" id="fbm6no"><strong>Incorrecto.</strong> El toolkit diferencia los dos controles. El del personal tiene todas las funciones. No son equivalentes. (Manual Hill-Rom VersaCare)</div></div>
+    <div class="qcard" data-p="med" data-q="m7"><div class="qtop"><span class="qnum">7</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Intermedio</span><span class="qtema">Cama con falla</span></div><div class="qq">Si en visita médica la cama no mantiene la posición indicada, el toolkit establece que el médico debe:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m7','med')"><span class="ql">A</span> Ajustarla manualmente y continuar</li><li class="qo" onclick="R(this,false,'m7','med')"><span class="ql">B</span> Indicar a enfermería que la ajuste cada hora</li><li class="qo" onclick="R(this,true,'m7','med')"><span class="ql">C</span> Reportar a enfermería + solicitar revisión biomédica + documentar en expediente</li><li class="qo" onclick="R(this,false,'m7','med')"><span class="ql">D</span> Cambiar la indicación clínica por una que la cama pueda mantener</li></ul><div class="fb fbok" id="fbm7ok"><strong>Correcto.</strong> El toolkit: falla técnica no justifica cambiar la indicación clínica. Reportar + revisar + documentar. (NOM-241)</div><div class="fb fbno" id="fbm7no"><strong>Incorrecto.</strong> La falla del equipo no cambia la indicación clínica del paciente. Reportar + revisar biomédica + documentar. (NOM-241)</div></div>
+    <div class="qcard" data-p="med" data-q="m8"><div class="qtop"><span class="qnum">8</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Avanzado</span><span class="qtema">Matriz</span></div><div class="qq">Según la matriz del toolkit, ¿cuál es la única actividad marcada exclusivamente para el perfil médico?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m8','med')"><span class="ql">A</span> Verificar frenos y barandillas</li><li class="qo" onclick="R(this,true,'m8','med')"><span class="ql">B</span> Prescribir la posición clínica</li><li class="qo" onclick="R(this,false,'m8','med')"><span class="ql">C</span> Inspección técnica del equipo</li><li class="qo" onclick="R(this,false,'m8','med')"><span class="ql">D</span> Retiro del servicio</li></ul><div class="fb fbok" id="fbm8ok"><strong>Correcto.</strong> La matriz del toolkit marca "Prescribir posición clínica" solo con ✔ en la columna de Médico. Es la única actividad exclusiva de ese perfil.</div><div class="fb fbno" id="fbm8no"><strong>Incorrecto.</strong> La matriz es clara: "Prescribir posición clínica" tiene ✔ únicamente en la columna de Médico.</div></div>
+    <div class="qcard" data-p="med" data-q="m9"><div class="qtop"><span class="qnum">9</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Avanzado</span><span class="qtema">Posición plana</span></div><div class="qq">La tabla del toolkit indica que la posición plana (0°) está contraindicada en pacientes con:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m9','med')"><span class="ql">A</span> Hipotensión severa</li><li class="qo" onclick="R(this,false,'m9','med')"><span class="ql">B</span> Post-punción lumbar</li><li class="qo" onclick="R(this,true,'m9','med')"><span class="ql">C</span> Riesgo de broncoaspiración</li><li class="qo" onclick="R(this,false,'m9','med')"><span class="ql">D</span> EPOC</li></ul><div class="fb fbok" id="fbm9ok"><strong>Correcto.</strong> La tabla del toolkit: posición plana contraindicada en riesgo de broncoaspiración. Hipotensión y post-punción lumbar son indicaciones.</div><div class="fb fbno" id="fbm9no"><strong>Incorrecto.</strong> La contraindicación de la posición plana es el riesgo de broncoaspiración. La hipotensión es una indicación.</div></div>
+    <div class="qcard" data-p="med" data-q="m10"><div class="qtop"><span class="qnum">10</span><span class="qbdg qbm">Médicos</span><span class="qdiff">Avanzado</span><span class="qtema">COFEPRIS</span></div><div class="qq">El toolkit establece que el médico tiene obligación de reportar a COFEPRIS ante:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'m10','med')"><span class="ql">A</span> Solo si él mismo usó el equipo</li><li class="qo" onclick="R(this,false,'m10','med')"><span class="ql">B</span> Solo en casos de muerte</li><li class="qo" onclick="R(this,true,'m10','med')"><span class="ql">C</span> Cualquier falla del equipo que causó o pudo causar deterioro de la salud del paciente</li><li class="qo" onclick="R(this,false,'m10','med')"><span class="ql">D</span> La obligación es exclusiva de biomédica</li></ul><div class="fb fbok" id="fbm10ok"><strong>Correcto.</strong> La matriz marca ✔ a médicos en "Notificación COFEPRIS". El criterio: falla que causó o pudo causar deterioro grave o casi-incidente. (NOM-220-SSA1-2016)</div><div class="fb fbno" id="fbm10no"><strong>Incorrecto.</strong> La matriz marca ✔ en COFEPRIS para los tres perfiles. El criterio va más allá de la muerte. (NOM-220)</div></div>
+  </div>
+
+  <!-- TÉCNICOS -->
+  <div id="qtec" style="display:none">
+    <div class="sbar"><div><div class="slb3">Correctas</div><div class="snum" id="st2">0 / 10</div></div><div class="spct" id="pt2">0%</div><button class="rbtn" onclick="RQ('tec')"><i class="ti ti-refresh"></i> Reiniciar</button></div>
+    <div class="qcard" data-p="tec" data-q="t1"><div class="qtop"><span class="qnum">1</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Básico</span><span class="qtema">Frenos</span></div><div class="qq">Según el toolkit, ¿qué fuerza lateral se aplica en la prueba de frenos durante el mantenimiento preventivo?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t1','tec')"><span class="ql">A</span> 10 N</li><li class="qo" onclick="R(this,false,'t1','tec')"><span class="ql">B</span> 25 N</li><li class="qo" onclick="R(this,true,'t1','tec')"><span class="ql">C</span> 50 N — la cama no debe desplazarse</li><li class="qo" onclick="R(this,false,'t1','tec')"><span class="ql">D</span> 100 N</li></ul><div class="fb fbok" id="fbt1ok"><strong>Correcto.</strong> El toolkit establece 50 N como estándar de prueba. Si se desplaza → retiro inmediato. (Stryker Epic II · Pronasa Salud)</div><div class="fb fbno" id="fbt1no"><strong>Incorrecto.</strong> El toolkit especifica 50 N. Si la cama se desplaza con esa fuerza es una falla de seguridad activa. (Stryker Epic II)</div></div>
+    <div class="qcard" data-p="tec" data-q="t2"><div class="qtop"><span class="qnum">2</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Básico</span><span class="qtema">Lubricación</span></div><div class="qq">El toolkit (Pronasa Salud) indica que los tornillos y articulaciones deben lubricarse cada:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t2','tec')"><span class="ql">A</span> Semana</li><li class="qo" onclick="R(this,false,'t2','tec')"><span class="ql">B</span> 6 meses junto al mantenimiento preventivo</li><li class="qo" onclick="R(this,true,'t2','tec')"><span class="ql">C</span> 3 meses, solo con repuestos y lubricantes originales del fabricante</li><li class="qo" onclick="R(this,false,'t2','tec')"><span class="ql">D</span> Solo cuando hay ruidos</li></ul><div class="fb fbok" id="fbt2ok"><strong>Correcto.</strong> El toolkit cita Pronasa Salud: lubricación trimestral. Solo repuestos originales — los genéricos comprometen la seguridad del paciente.</div><div class="fb fbno" id="fbt2no"><strong>Incorrecto.</strong> Pronasa Salud: lubricación cada 3 meses, no solo cuando hay síntomas. El mantenimiento preventivo anticipa la falla.</div></div>
+    <div class="qcard" data-p="tec" data-q="t3"><div class="qtop"><span class="qnum">3</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Básico</span><span class="qtema">Retiro del servicio</span></div><div class="qq">Según la tabla de fallas del toolkit, si la barandilla no queda fija al subirla, la acción es:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t3','tec')"><span class="ql">A</span> Indicar a enfermería que tenga cuidado</li><li class="qo" onclick="R(this,false,'t3','tec')"><span class="ql">B</span> Registrar y revisar en el próximo mantenimiento</li><li class="qo" onclick="R(this,true,'t3','tec')"><span class="ql">C</span> Retirar del servicio de inmediato — la tabla indica retiro inmediato obligatorio</li><li class="qo" onclick="R(this,false,'t3','tec')"><span class="ql">D</span> Retirar solo si ya causó un incidente</li></ul><div class="fb fbok" id="fbt3ok"><strong>Correcto.</strong> La tabla del toolkit: barandilla que no fija = retiro inmediato. Es falla de seguridad activa, no para seguimiento.</div><div class="fb fbno" id="fbt3no"><strong>Incorrecto.</strong> La tabla marca retiro inmediato para barandilla que no queda fija. No se puede esperar ni solo avisar.</div></div>
+    <div class="qcard" data-p="tec" data-q="t4"><div class="qtop"><span class="qnum">4</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Básico</span><span class="qtema">Checklist biomed</span></div><div class="qq">El checklist de mantenimiento del toolkit tiene ¿cuántos puntos obligatorios?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t4','tec')"><span class="ql">A</span> 3 puntos</li><li class="qo" onclick="R(this,false,'t4','tec')"><span class="ql">B</span> 5 puntos</li><li class="qo" onclick="R(this,true,'t4','tec')"><span class="ql">C</span> 8 puntos incluyendo registro en SIEM y evaluación de reporte a COFEPRIS</li><li class="qo" onclick="R(this,false,'t4','tec')"><span class="ql">D</span> Solo los que reporta enfermería</li></ul><div class="fb fbok" id="fbt4ok"><strong>Correcto.</strong> El checklist del toolkit tiene 8 puntos. Los últimos dos —SIEM y COFEPRIS— son tan obligatorios como la revisión mecánica. (NOM-241)</div><div class="fb fbno" id="fbt4no"><strong>Incorrecto.</strong> El checklist del toolkit tiene 8 puntos, incluyendo SIEM y evaluación de reporte COFEPRIS. (NOM-241)</div></div>
+    <div class="qcard" data-p="tec" data-q="t5"><div class="qtop"><span class="qnum">5</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Intermedio</span><span class="qtema">Actuadores</span></div><div class="qq">El toolkit establece que un actuador requiere retiro del servicio cuando su lentitud supera:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t5','tec')"><span class="ql">A</span> 10% sobre el parámetro normal</li><li class="qo" onclick="R(this,false,'t5','tec')"><span class="ql">B</span> 50% sobre el parámetro normal</li><li class="qo" onclick="R(this,true,'t5','tec')"><span class="ql">C</span> 30% sobre el parámetro normal del fabricante</li><li class="qo" onclick="R(this,false,'t5','tec')"><span class="ql">D</span> Solo cuando se detiene completamente</li></ul><div class="fb fbok" id="fbt5ok"><strong>Correcto.</strong> Los criterios de retiro del toolkit: actuador con lentitud mayor al 30% = retiro. No se espera a fallo total. (Ortotecsa ORT-5618K)</div><div class="fb fbno" id="fbt5no"><strong>Incorrecto.</strong> El umbral del toolkit es 30%. Esperar al 50% implica operar un equipo que ya representa riesgo. (Ortotecsa ORT-5618K)</div></div>
+    <div class="qcard" data-p="tec" data-q="t6"><div class="qtop"><span class="qnum">6</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Intermedio</span><span class="qtema">Protocolo retiro</span></div><div class="qq">El protocolo del toolkit tiene 7 pasos al retirar una cama. ¿Cuál es el paso 2 inmediato después de retirarla del servicio?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t6','tec')"><span class="ql">A</span> Reportar a COFEPRIS</li><li class="qo" onclick="R(this,false,'t6','tec')"><span class="ql">B</span> Registrar en SIEM</li><li class="qo" onclick="R(this,true,'t6','tec')"><span class="ql">C</span> Colocar etiqueta visible "FUERA DE SERVICIO" con fecha, hora y nombre de quien reporta</li><li class="qo" onclick="R(this,false,'t6','tec')"><span class="ql">D</span> Iniciar el mantenimiento correctivo</li></ul><div class="fb fbok" id="fbt6ok"><strong>Correcto.</strong> Protocolo: 1. Retirar → 2. Etiquetar → 3. Reportar biomédica → 4. Documentar → 5. Evaluar COFEPRIS → 6. SIEM → 7. Reintegrar.</div><div class="fb fbno" id="fbt6no"><strong>Incorrecto.</strong> El paso 2 es la etiqueta "FUERA DE SERVICIO" con fecha, hora y nombre. Evita que alguien lo use sin saberlo.</div></div>
+    <div class="qcard" data-p="tec" data-q="t7"><div class="qtop"><span class="qnum">7</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Intermedio</span><span class="qtema">Repuestos</span></div><div class="qq">El toolkit (Pronasa Salud) indica que al reparar la cama deben usarse:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t7','tec')"><span class="ql">A</span> Repuestos genéricos si son más económicos</li><li class="qo" onclick="R(this,false,'t7','tec')"><span class="ql">B</span> Cualquier repuesto con las mismas dimensiones</li><li class="qo" onclick="R(this,true,'t7','tec')"><span class="ql">C</span> Exclusivamente repuestos originales del fabricante — los genéricos comprometen la seguridad</li><li class="qo" onclick="R(this,false,'t7','tec')"><span class="ql">D</span> Repuestos de otras camas del mismo hospital</li></ul><div class="fb fbok" id="fbt7ok"><strong>Correcto.</strong> Pronasa Salud (toolkit): "el uso de repuestos originales es vital para la seguridad del paciente".</div><div class="fb fbno" id="fbt7no"><strong>Incorrecto.</strong> Pronasa Salud es explícito: solo repuestos originales. Los genéricos pueden alterar los parámetros de seguridad.</div></div>
+    <div class="qcard" data-p="tec" data-q="t8"><div class="qtop"><span class="qnum">8</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Avanzado</span><span class="qtema">Falla predictiva</span></div><div class="qq">El toolkit muestra un actuador con deterioro progresivo: +15%, +28%, +41% de lentitud en 3 mantenimientos. ¿Qué corresponde en el tercer mantenimiento?</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t8','tec')"><span class="ql">A</span> Lubricación adicional y devolución al servicio</li><li class="qo" onclick="R(this,false,'t8','tec')"><span class="ql">B</span> Esperar al cuarto mantenimiento para confirmar</li><li class="qo" onclick="R(this,true,'t8','tec')"><span class="ql">C</span> Retiro preventivo, mantenimiento correctivo del motor y análisis de causa raíz antes de reintegrar</li><li class="qo" onclick="R(this,false,'t8','tec')"><span class="ql">D</span> Cambiar el control remoto</li></ul><div class="fb fbok" id="fbt8ok"><strong>Correcto.</strong> El 41% supera el umbral del toolkit (30%). Falla mecánica del motor — la lubricación no lo resuelve. Causa raíz obligatoria. (Pronasa Salud · Ortotecsa ORT-5618K)</div><div class="fb fbno" id="fbt8no"><strong>Incorrecto.</strong> El 41% supera el umbral de retiro (30%). El patrón progresivo indica falla del motor. Retiro + causa raíz es obligatorio. (Pronasa Salud)</div></div>
+    <div class="qcard" data-p="tec" data-q="t9"><div class="qtop"><span class="qnum">9</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Avanzado</span><span class="qtema">Falla recurrente</span></div><div class="qq">Según la tabla de fallas del toolkit, si el control requiere doble pulsación para responder, la causa probable y acción son:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t9','tec')"><span class="ql">A</span> Batería baja — cambiar batería</li><li class="qo" onclick="R(this,true,'t9','tec')"><span class="ql">B</span> Cable dañado o conexión suelta — verificar y si persiste: retiro del servicio</li><li class="qo" onclick="R(this,false,'t9','tec')"><span class="ql">C</span> Problema de software — reiniciar</li><li class="qo" onclick="R(this,false,'t9','tec')"><span class="ql">D</span> Normal con años de uso</li></ul><div class="fb fbok" id="fbt9ok"><strong>Correcto.</strong> La tabla del toolkit: doble pulsación = cable dañado/conexión suelta → verificar → si persiste: retiro del servicio. (Stryker Epic II)</div><div class="fb fbno" id="fbt9no"><strong>Incorrecto.</strong> La tabla identifica cable dañado/conexión suelta. Si requiere doble pulsación → retiro del servicio. No es aceptable. (Stryker Epic II)</div></div>
+    <div class="qcard" data-p="tec" data-q="t10"><div class="qtop"><span class="qnum">10</span><span class="qbdg qbt">Técnicos</span><span class="qdiff">Avanzado</span><span class="qtema">COFEPRIS plazos</span></div><div class="qq">El toolkit (NOM-220-SSA1-2016) establece que los eventos graves relacionados con la cama deben notificarse a COFEPRIS en:</div><ul class="qopts"><li class="qo" onclick="R(this,false,'t10','tec')"><span class="ql">A</span> 30 días hábiles</li><li class="qo" onclick="R(this,false,'t10','tec')"><span class="ql">B</span> 7 días</li><li class="qo" onclick="R(this,true,'t10','tec')"><span class="ql">C</span> 72 horas para eventos graves — dentro del mes para no graves con patrón recurrente</li><li class="qo" onclick="R(this,false,'t10','tec')"><span class="ql">D</span> No hay plazo definido</li></ul><div class="fb fbok" id="fbt10ok"><strong>Correcto.</strong> NOM-220 (toolkit): eventos graves = 72 horas, no graves recurrentes = dentro del mes. El plazo es parte del protocolo de tecnovigilancia.</div><div class="fb fbno" id="fbt10no"><strong>Incorrecto.</strong> NOM-220: eventos graves = 72 horas. No graves recurrentes = dentro del mes. No hay discrecionalidad en los plazos.</div></div>
+  </div>
+</div>
+
+<!-- ═══ DIAGRAMAS ═══ -->
+<div id="tab-diag" class="pnl">
+  <p class="slbl">Algoritmos de decisión · Diagramas de flujo</p>
+  <div class="card">
+    <div class="ch"><div class="ci cb"><i class="ti ti-git-branch"></i></div><div class="ctitle">Diagrama 1 — Selección de posición clínica</div></div>
+    <div style="padding:6px 0">
+      <div style="text-align:center;font-size:11px;color:#555;margin-bottom:6px;font-weight:600">¿El paciente necesita mejorar ventilación o tiene riesgo de broncoaspiración?</div>
+      <div class="fl-row" style="margin-bottom:6px">
+        <div class="fl-col">
+          <div class="fl-box fl-q">SÍ</div><div class="fl-arr">↓</div>
+          <div class="fl-box" style="font-weight:500;font-size:11px">¿Tolera 45° o más?</div>
+          <div class="fl-row" style="gap:6px;margin-top:5px">
+            <div class="fl-col"><div class="fl-box fl-ok">SÍ<br>Fowler 45–90°</div></div>
+            <div class="fl-col"><div class="fl-box fl-w">NO<br>Semi-Fowler 30–45°</div></div>
+          </div>
+        </div>
+        <div class="fl-col">
+          <div class="fl-box fl-q">NO</div><div class="fl-arr">↓</div>
+          <div class="fl-box" style="font-weight:500;font-size:11px">¿Hipotensión o indicación de posición plana?</div>
+          <div class="fl-row" style="gap:6px;margin-top:5px">
+            <div class="fl-col"><div class="fl-box fl-w">SÍ<br>Posición plana 0°</div></div>
+            <div class="fl-col"><div class="fl-box fl-ok">NO<br>Semi-Fowler 30° por defecto</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center"><div class="fl-arr">↓</div></div>
+      <div class="fl-box fl-ok" style="max-width:300px;margin:0 auto">Documentar: posición + grado + frecuencia en nota médica</div>
+    </div>
+    <div class="src" style="margin-top:8px">La posición Fowler y sus variantes · NOM-241-SSA1-2021</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cr"><i class="ti ti-git-branch"></i></div><div class="ctitle">Diagrama 2 — Actuación ante falla de la cama</div></div>
+    <div style="padding:6px 0">
+      <div class="fl-box fl-q" style="max-width:240px;margin:0 auto 6px">¿La cama responde al control eléctrico?</div>
+      <div class="fl-row">
+        <div class="fl-col">
+          <div class="fl-box fl-r">NO</div><div class="fl-arr">↓</div>
+          <div class="fl-box" style="font-weight:500;font-size:11px">¿Paciente en riesgo inmediato por posición?</div>
+          <div class="fl-row" style="gap:5px;margin-top:5px">
+            <div class="fl-col"><div class="fl-box fl-r">SÍ</div><div class="fl-arr">↓</div><div class="fl-box fl-w" style="font-size:10px">Usar palanca manual</div><div class="fl-arr">↓</div><div class="fl-box fl-ok" style="font-size:10px">Reportar biomédica · No usar hasta revisión</div></div>
+            <div class="fl-col"><div class="fl-box fl-ok">NO</div><div class="fl-arr">↓</div><div class="fl-box fl-w" style="font-size:10px">Etiquetar FUERA DE SERVICIO · Reportar biomédica</div></div>
+          </div>
+        </div>
+        <div class="fl-col">
+          <div class="fl-box fl-ok">SÍ, funciona</div><div class="fl-arr">↓</div>
+          <div class="fl-box" style="font-weight:500;font-size:11px">¿Ruidos, lentitud o comportamiento irregular?</div>
+          <div class="fl-row" style="gap:5px;margin-top:5px">
+            <div class="fl-col"><div class="fl-box fl-w" style="font-size:10px">SÍ → Reportar biomédica · Seguimiento</div></div>
+            <div class="fl-col"><div class="fl-box fl-ok" style="font-size:10px">NO → Continuar · Documentar en bitácora</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="src" style="margin-top:8px">Manual Hill-Rom 900B · VersaCare · NOM-220-SSA1-2016</div>
+  </div>
+</div>
+
+<!-- ═══ FALLAS Y TECNOVIGILANCIA ═══ -->
+<div id="tab-tecno" class="pnl">
+  <p class="slbl">Tecnovigilancia · Protocolo de retiro · Fallas frecuentes</p>
+  <div class="alrt ai"><i class="ti ti-info-circle"></i><div>NOM-220-SSA1-2016: notificación <strong>obligatoria</strong> a COFEPRIS ante falla que causó o pudo causar muerte, deterioro grave de la salud o casi-incidente con riesgo real.</div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cr"><i class="ti ti-alert-circle"></i></div><div class="ctitle">Protocolo de retiro del servicio — 7 pasos</div></div>
+    <ul class="steps">
+      <li class="si"><span class="sn snr">1</span><div><div class="st"><strong>Retirar del servicio de inmediato.</strong> No esperar a fallo total. No reiniciar sin revisión documentada.</div></div></li>
+      <li class="si"><span class="sn snr">2</span><div><div class="st"><strong>Colocar etiqueta visible: "FUERA DE SERVICIO — No usar"</strong> con fecha, hora y nombre de quien reporta.</div></div></li>
+      <li class="si"><span class="sn snr">3</span><div><div class="st"><strong>Reportar a ingeniería biomédica</strong> con descripción precisa del síntoma, condiciones y número de veces que ocurrió.</div><div class="snt">Pronasa Salud</div></div></li>
+      <li class="si"><span class="sn snr">4</span><div><div class="st"><strong>Documentar en bitácora del equipo y expediente</strong> del paciente si hubo implicación clínica.</div><div class="snt">NOM-241-SSA1-2021</div></div></li>
+      <li class="si"><span class="sn snr">5</span><div><div class="st"><strong>Evaluar si aplica reporte COFEPRIS:</strong> ¿hubo lesión? ¿casi-incidente con riesgo real? ¿deterioro del paciente? Sí a cualquiera → reporte obligatorio.</div><div class="snt">COFEPRIS · NOM-220-SSA1-2016</div></div></li>
+      <li class="si"><span class="sn snr">6</span><div><div class="st"><strong>Registrar en SIEM</strong> (Sistema de Información de Equipos Médicos) con hallazgos y acciones tomadas.</div></div></li>
+      <li class="si"><span class="sn snr">7</span><div><div class="st"><strong>Reintegrar solo con mantenimiento correctivo documentado</strong> y firma de responsable de biomédica.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci ca"><i class="ti ti-table"></i></div><div class="ctitle">Fallas frecuentes — causa y acción</div></div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Falla observada</th><th>Posible causa</th><th>Acción inmediata</th><th>¿Retiro?</th></tr></thead>
+      <tbody>
+        <tr><td>Control no responde al 1er toque</td><td>Cable dañado o conexión suelta</td><td>Verificar conexión. Si persiste: reportar a biomédica</td><td>Si requiere doble pulsación: <strong>sí</strong></td></tr>
+        <tr><td>Barandilla no queda fija</td><td>Desgaste mecánico del bloqueo</td><td>No usar barandilla · Retirar · Biomédica</td><td><strong>Sí, inmediato</strong></td></tr>
+        <tr><td>Cama se desplaza con frenos activos</td><td>Frenos desgastados o rotos</td><td>Retirar del servicio inmediatamente</td><td><strong>Sí, inmediato</strong></td></tr>
+        <tr><td>Actuador lento o con ruido</td><td>Falta lubricación · Desgaste del motor</td><td>Reportar · Seguimiento en bitácora</td><td>Si lentitud &gt;30%: <strong>sí</strong></td></tr>
+        <tr><td>Cama no llega al grado indicado</td><td>Falla del actuador o sensor</td><td>No usar · Mantenimiento correctivo</td><td><strong>Sí</strong></td></tr>
+        <tr><td>Alarma de salida no funciona</td><td>Sensor desconectado o dañado</td><td>Reportar urgente · Medidas alternativas</td><td><strong>Sí</strong></td></tr>
+        <tr><td>Cable con aislamiento dañado</td><td>Uso prolongado · Mal almacenamiento</td><td>Retirar · Riesgo eléctrico activo</td><td><strong>Sí, inmediato</strong></td></tr>
+        <tr><td>Traqueteo al mover la cama</td><td>Tornillo suelto · Pieza fracturada</td><td>Inspección técnica inmediata · No usar</td><td><strong>Sí</strong></td></tr>
+      </tbody>
+    </table></div>
+    <div class="src">Ortotecsa ORT-5618K · Pronasa Salud · Manual Stryker Epic II</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci cp"><i class="ti ti-file-alert"></i></div><div class="ctitle">¿Cuándo reportar a COFEPRIS?</div></div>
+    <div class="alrt ad"><i class="ti ti-x"></i><div><strong>Notificación obligatoria si hubo:</strong> muerte relacionada con la falla · Deterioro grave de la salud · Casi-incidente con riesgo real de lesión grave.</div></div>
+    <div class="alrt aw"><i class="ti ti-clock"></i><div><strong>Plazos NOM-220-SSA1-2016:</strong> eventos graves → 72 horas. No graves con patrón recurrente → dentro del mes. Enfermería, médicos y biomédica tienen la obligación.</div></div>
+    <div class="alrt as"><i class="ti ti-check"></i><div><strong>Qué incluir en el reporte:</strong> descripción del evento, modelo y número de serie de la cama, acciones tomadas, estado del paciente y documentación de mantenimiento previo.</div></div>
+  </div>
+</div>
+
+<!-- ═══ ÉTICA ═══ -->
+<div id="tab-etica" class="pnl">
+  <p class="slbl">Ética, normatividad y uso de IA</p>
+  <div class="alrt as"><i class="ti ti-shield-check"></i><div><strong>Declaración de integridad:</strong> todo el contenido fue generado con IA (Claude, Anthropic) y validado por el autor contra las fuentes listadas. Ningún contenido se incluyó sin verificación técnica previa.</div></div>
+  <div class="g2">
+    <div class="ni"><div class="nt">NOM-241-SSA1-2021</div><div class="ns">Buenas prácticas con dispositivos médicos. Orienta mantenimiento y retiro del servicio.</div></div>
+    <div class="ni"><div class="nt">NOM-220-SSA1-2016</div><div class="ns">Tecnovigilancia nacional. Base del reporte obligatorio a COFEPRIS.</div></div>
+    <div class="ni"><div class="nt">COFEPRIS · Gob MX</div><div class="ns">Criterios de notificación: muerte, deterioro grave, casi-incidentes. Plazos obligatorios.</div></div>
+    <div class="ni"><div class="nt">CLIMSS · ISSSTE</div><div class="ns">Protocolo de limpieza y desinfección: concentraciones, técnica y áreas críticas.</div></div>
+    <div class="ni"><div class="nt">CEOMA</div><div class="ns">Seguridad con barandillas en adultos mayores. Evaluación individual antes de contener.</div></div>
+    <div class="ni"><div class="nt">Pronasa Salud</div><div class="ns">Mantenimiento preventivo: lubricación trimestral, repuestos originales del fabricante.</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ci cp"><i class="ti ti-robot"></i></div><div class="ctitle">Sesgos de IA detectados y corregidos</div></div>
+    <ul class="steps">
+      <li class="si"><span class="sn snr">!</span><div><div class="st">Sesgo: la IA asumía que solo enfermería opera la cama.</div><div class="snt">Corrección: se desarrolló contenido específico para médicos y técnicos biomed.</div></div></li>
+      <li class="si"><span class="sn snr">!</span><div><div class="st">Sesgo: los casos generados usaban pacientes jóvenes y cooperadores por defecto.</div><div class="snt">Corrección: se rediseñaron con adultos mayores, desorientados y turnos nocturnos con recursos limitados.</div></div></li>
+      <li class="si"><span class="sn snr">!</span><div><div class="st">Sesgo: el lenguaje inicial era demasiado técnico para enfermería.</div><div class="snt">Corrección: lenguaje operativo directo conservando precisión clínica.</div></div></li>
+      <li class="si"><span class="sn">✓</span><div><div class="st">Todo contenido cita su fuente específica para permitir trazabilidad y verificación.</div></div></li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+const SC = {enf:{ok:0,t:0}, med:{ok:0,t:0}, tec:{ok:0,t:0}};
+
+function TAB(n,b){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'));
+  document.getElementById('tab-'+n).classList.add('on');
+  b.classList.add('on');
+}
+
+function PERF(p,b){
+  document.querySelectorAll('#tab-perfil .pc').forEach(c=>c.className='pc');
+  ['pe','pm','pt'].forEach(x=>document.getElementById(x).style.display='none');
+  document.getElementById('p'+p[0]).style.display='block';
+  const m={enf:'pce',med:'pcm',tec:'pct'};
+  b.className='pc '+m[p];
+}
+
+function FQ(p,b){
+  document.querySelectorAll('#tab-banco .pc').forEach(c=>c.className='pc');
+  b.className='pc pce';
+  ['enf','med','tec'].forEach(x=>document.getElementById('q'+x).style.display='none');
+  document.getElementById('q'+p).style.display='block';
+}
+
+function R(el,ok,qid,p){
+  const c=el.closest('.qcard');
+  if(c.dataset.done) return;
+  c.dataset.done='1';
+  c.querySelectorAll('.qo').forEach(o=>o.classList.add('dis'));
+  el.classList.add(ok?'ok':'no');
+  c.classList.add(ok?'aok':'ano');
+  const fbok=document.getElementById('fb'+qid+'ok');
+  const fbno=document.getElementById('fb'+qid+'no');
+  if(ok && fbok) fbok.style.display='block';
+  else if(fbno) fbno.style.display='block';
+  SC[p].t++;
+  if(ok) SC[p].ok++;
+  US(p);
+}
+
+function US(p){
+  const {ok,t}=SC[p];
+  const ids={enf:['se','pe2'],med:['sm','pm2'],tec:['st2','pt2']};
+  document.getElementById(ids[p][0]).textContent=ok+' / 10';
+  const pct=t>0?Math.round((ok/t)*100):0;
+  const el=document.getElementById(ids[p][1]);
+  el.textContent=pct+'%';
+  el.style.color=pct>=70?'#085041':pct>=50?'#854F0B':'#A32D2D';
+}
+
+function RQ(p){
+  SC[p]={ok:0,t:0};
+  US(p);
+  document.querySelectorAll('.qcard[data-p="'+p+'"]').forEach(c=>{
+    delete c.dataset.done;
+    c.classList.remove('aok','ano');
+    c.querySelectorAll('.qo').forEach(o=>o.classList.remove('ok','no','dis'));
+    c.querySelectorAll('.fb').forEach(f=>f.style.display='none');
+  });
+}
+
+function CK(row){
+  const b=row.querySelector('.ckb');
+  b.classList.toggle('done');
+}
+</script>
+</body>
+</html>
